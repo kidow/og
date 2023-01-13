@@ -1,5 +1,4 @@
 import { ImageResponse } from '@vercel/og'
-import type { ImageResponseOptions } from '@vercel/og'
 import { NextRequest } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
@@ -69,28 +68,15 @@ const response = (
 
 export default async function handler(req: NextRequest) {
   try {
-    const font = await (
-      await fetch(
-        new URL('../../public/Pretendard-Regular.woff', import.meta.url)
-      )
-    ).arrayBuffer()
-    const options: ImageResponseOptions = {
-      width: 1200,
-      height: 600,
-      fonts: [{ name: 'Pretendard', data: font, style: 'normal' }]
-    }
     const { searchParams } = new URL(req.url)
     const { data } = await supabase
       .from('thumbnails')
       .select('title, description, color, url')
       .eq('id', searchParams.get('id'))
       .single()
-    if (!data) return new ImageResponse(response(), options)
+    if (!data) return new ImageResponse(response())
 
-    return new ImageResponse(
-      response(data.title, data.description, data.color),
-      options
-    )
+    return new ImageResponse(response(data.title, data.description, data.color))
   } catch (e) {
     console.log(e)
     return new ImageResponse(response(), { width: 1200, height: 600 })
