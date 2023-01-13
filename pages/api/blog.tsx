@@ -20,7 +20,7 @@ const response = (
     <div tw="flex mb-[1.8rem] w-[1040px]">
       <div
         tw="flex-1 text-[5rem] font-bold text-[#2f363d]"
-        style={{ lineHeight: 1.2 }}
+        style={{ lineHeight: 0.98 }}
       >
         {title}
       </div>
@@ -31,7 +31,7 @@ const response = (
         tw="ml-10"
       />
     </div>
-    <div tw="text-[#6e7681]" style={{ lineHeight: 1.5, fontSize: '33.6px' }}>
+    <div tw="text-[#6e7681]" style={{ fontSize: '33.6px' }}>
       {description}
     </div>
     <div tw="flex absolute left-20 bottom-32 text-[2rem] items-center">
