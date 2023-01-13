@@ -1,4 +1,5 @@
 import { ImageResponse } from '@vercel/og'
+import type { ImageResponseOptions } from '@vercel/og'
 import { NextRequest } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
@@ -18,10 +19,7 @@ const response = (
 ) => (
   <div tw="flex flex-col h-full w-full bg-white relative p-20">
     <div tw="flex mb-[1.8rem] w-[1040px]">
-      <div
-        tw="flex-1 text-[5rem] font-bold text-[#2f363d]"
-        style={{ lineHeight: 0.98 }}
-      >
+      <div tw="flex-1 text-[5rem] text-[#2f363d]" style={{ lineHeight: 0.98 }}>
         {title}
       </div>
       <img
@@ -68,15 +66,28 @@ const response = (
 
 export default async function handler(req: NextRequest) {
   try {
+    const font = await (
+      await fetch(
+        new URL('../../public/NotoSansKR-Bold-subset.woff', import.meta.url)
+      )
+    ).arrayBuffer()
+    const options: ImageResponseOptions = {
+      width: 1200,
+      height: 600,
+      fonts: [{ name: 'NotoSansKR-subset', data: font, style: 'normal' }]
+    }
     const { searchParams } = new URL(req.url)
     const { data } = await supabase
       .from('thumbnails')
       .select('title, description, color, url')
       .eq('id', searchParams.get('id'))
       .single()
-    if (!data) return new ImageResponse(response())
+    if (!data) return new ImageResponse(response(), options)
 
-    return new ImageResponse(response(data.title, data.description, data.color))
+    return new ImageResponse(
+      response(data.title, data.description, data.color),
+      options
+    )
   } catch (e) {
     console.log(e)
     return new ImageResponse(response(), { width: 1200, height: 600 })
